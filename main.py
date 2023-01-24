@@ -27,7 +27,7 @@ def enviar_email(nome_bot, numero_bot):
 
     #Login
     s.login(msg['From'], password)
-    s.sendmail(msg['From'], [msg['To'], 'autofinanciarbryan@gmail.com', 'o.natan1907@gmail.com'], msg.as_string().encode('utf-8'))
+    s.sendmail(msg['From'], [msg['To'], 'autofinanciarbryan@gmail.com'], msg.as_string().encode('utf-8'))
     print("Email enviado.")
 
 usuario = 'o.natan1907@gmail.com'
