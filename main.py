@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 import clipboard
 import smtplib
 import email.message
+import os
 
 def enviar_email(nome_bot, numero_bot):
 
@@ -27,13 +28,21 @@ def enviar_email(nome_bot, numero_bot):
 
     #Login
     s.login(msg['From'], password)
-    s.sendmail(msg['From'], [msg['To'], 'autofinanciarbryan@gmail.com'], msg.as_string().encode('utf-8'))
+    s.sendmail(msg['From'], [msg['To'], 'autofinanciarbryan@gmail.com', 'o.natan1907@gmail.com'], msg.as_string().encode('utf-8'))
     print("Email enviado.")
 
 usuario = 'o.natan1907@gmail.com'
 senha = 'Natan@11'
+
+chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--no-sandbox")
+
 servico = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=servico)
+driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),options=chrome_options,  service=servico)
+
 print("""
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 Bem-vindo á Autmoação do BotConversa.
