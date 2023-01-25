@@ -40,8 +40,7 @@ def main():
     servico = Service(ChromeDriverManager().install())
 
     options = webdriver.ChromeOptions()
-    # Rodar em Bakground
-    options.add_argument('--headless')
+    
     # Para não aparecer rascunhos no LOG
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
@@ -93,7 +92,7 @@ def main():
             print(f'\033[31m{nome} está fora do ar\033[m')
             # ir para campanhas 
             driver.get(f"https://www.app.botconversa.com.br/{numero}/campaigns")
-            sleep(2)
+            sleep(4)
 
             # Botão copiar link
             driver.find_element(By.CSS_SELECTOR, 'button.purple').click()
@@ -259,7 +258,8 @@ def main():
                             enviar_email(nome, zap_formatado)
 
                 driver.get('https://botcompany.pro/urlredirect/public/links')
-    print("\033[31mFluxo encerrado!\033[m")
+    driver.quit()
+    print("\033[31m---- Fluxo encerrado! ----\033[m")
 
 # A cada 5min faça:
 schedule.every(5).seconds.do(main)
