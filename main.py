@@ -10,6 +10,7 @@ import clipboard
 import smtplib
 import email.message
 import os
+import schedule
 
 def enviar_email(nome_bot, numero_bot):
 
@@ -31,46 +32,37 @@ def enviar_email(nome_bot, numero_bot):
     s.sendmail(msg['From'], [msg['To'], 'autofinanciarbryan@gmail.com', 'o.natan1907@gmail.com'], msg.as_string().encode('utf-8'))
     print("Email enviado.")
 
-usuario = 'o.natan1907@gmail.com'
-senha = 'Natan@11'
+def main():
 
-chrome_options = webdriver.ChromeOptions()
-chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-chrome_options.add_argument("--headless")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--no-sandbox")
+    usuario = 'o.natan1907@gmail.com'
+    senha = 'Natan@11'
 
-servico = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"),options=chrome_options,  service=servico)
+    servico = Service(ChromeDriverManager().install())
+    driver = webdriver.Chrome(service=servico)
 
-print("""
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-Bem-vindo á Autmoação do BotConversa.
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-\n""")
-print("Iniciando automação...")
-driver.maximize_window()
-sleep(4)
-driver.get("https://www.app.botconversa.com.br/login")
-sleep(4)
+    print("Iniciando automação...")
+    driver.maximize_window()
+    driver.get("https://www.app.botconversa.com.br/login")
+    sleep(2.5)
 
-# ---- Login ----
-print("Fazendo Login no BotConversa.")
-driver.find_element(By.NAME, 'email').send_keys(usuario)
-sleep(0.7)
+    # ---- Login ----
+    print("Fazendo Login no BotConversa.")
+    driver.find_element(By.NAME, 'email').send_keys(usuario)
+    sleep(0.7)
 
-driver.find_element(By.NAME, 'password').send_keys(senha)
-sleep(0.7)
+    driver.find_element(By.NAME, 'password').send_keys(senha)
+    sleep(0.7)
 
-driver.find_element(By.XPATH, '//form/div[3]/button[1]').click()
-sleep(6)
-print("\033[32mLogin efetuado com sucesso!\033[m")
-print("\033[33mVerificando Bots...\033[m")
+    driver.find_element(By.XPATH, '//form/div[3]/button[1]').click()
+    sleep(3)
+    print("\033[32mLogin efetuado com sucesso!\033[m")
+    sleep(0.5)
 
-while True:
+    print("\033[33mVerificando Bots...\033[m")
     # ---- Bots ativos ----
     driver.get('https://www.app.botconversa.com.br')
-    sleep(4)
-    
+    sleep(2)
+
     # abrir bots laterais
     driver.find_element(By.XPATH, '//ul/div').click()
 
@@ -84,7 +76,7 @@ while True:
     # Acessar os bots 1 por 1
     for numero in lista_numeros:
         driver.get(f"https://www.app.botconversa.com.br/{numero}")
-        sleep(4)
+        sleep(2)
         nome = driver.find_element(By.XPATH, '//*[@id="root"]/div/div[1]/div/div[2]/div[2]/div[1]/ul/div/div/div[2]/div[1]/div[1]').text
 
     # se não estiver ativo :
@@ -96,15 +88,10 @@ while True:
             print(f'\033[31m{nome} está fora do ar\033[m')
             # ir para campanhas 
             driver.get(f"https://www.app.botconversa.com.br/{numero}/campaigns")
-            sleep(4)
+            sleep(2)
 
             # Botão copiar link
-            botoes = driver.find_elements(By.TAG_NAME, 'button')
-            for btn in botoes:
-                if btn.text == 'Copiar Link':
-                    btn.click()
-                else:
-                    pass
+            driver.find_element(By.CSS_SELECTOR, 'button.purple').click()
 
             # Pegar número do Whats 
             link = clipboard.paste()
@@ -113,28 +100,26 @@ while True:
             igual = query.split('=')
             e = igual[1].split('&')
             zap = e[0]
-            zap_formatado = '+{} ({}) {}-{}'.format(zap[:2], zap[2:4], zap[4:9], zap[9:]) 
 
+            zap_formatado = '+{} ({}) {}-{}'.format(zap[:2], zap[2:4], zap[4:9], zap[9:]) 
             print(f'{nome}: {zap_formatado}')
 
             # entrar página Link
             driver.get('https://botcompany.pro/urlredirect/public/dashboard')
-            sleep(3)
+            sleep(2)
             try:
                 # Fazer login
                 driver.find_element(By.NAME, 'email').send_keys("blade2@gmail.com")
                 sleep(0.7)
-
                 driver.find_element(By.NAME, 'password').send_keys("blade2")
                 sleep(0.7)
-
                 driver.find_element(By.XPATH, '//form/button').click()
-                sleep(5)
+                sleep(3)
             except:
                 pass
 
             driver.get('https://botcompany.pro/urlredirect/public/links')
-            sleep(5)
+            sleep(2)
             c = 2 
             
             # Ver os 3 links 10k
@@ -142,7 +127,7 @@ while True:
                 driver.find_element(By.XPATH, f'/html/body/div[2]/div[1]/div/div/div/div[4]/div[2]/div/div[{c}]/div/div[2]/div/div[2]/a').click()
                 driver.find_element(By.XPATH, f'/html/body/div[2]/div[1]/div/div/div/div[4]/div[2]/div/div[{c}]/div/div[2]/div/div[2]/div/a[1]').click()
                 c += 1
-                sleep(3)
+                sleep(1)
 
                 # pegar links
                 numeros = []
@@ -157,13 +142,12 @@ while True:
                     w = n.split('=')
                     ws = w[1].split('&')
                     num = ws[0]
-
                     lista_zap.append(num)
                 
                 # se o numero do bot for igual ao numero da lista de links:
                 for i, n in enumerate(numeros):
                     if zap in n:
-                        sleep(5)
+                        sleep(3)
                         print(f'\033[035m O Bot {nome} foi identificado no BotCompany!\033[m')
                         salvar = driver.find_element(By.NAME, 'submit')
 
@@ -174,17 +158,18 @@ while True:
                             driver.find_element(By.XPATH, '//*[@id="i-url"]').send_keys(numeros[1])
                             botao_excluir = driver.find_element(By.XPATH, '//*[@id="rotation-container"]/div/div[2]/div/div/div[2]/button')
                             driver.execute_script("arguments[0].scrollIntoView();", botao_excluir)
-                            sleep(4)
+                            sleep(1)
                             botao_excluir.click() 
                             salvar.click()
+                            sleep(2)
                             print(f"\033[032m{nome} foi exluido com sucesso!\033[m")
                             enviar_email(nome, zap_formatado)
-                                      
+                                        
                         elif i == 1:
                             # apagar input 2
                             botao_excluir = driver.find_element(By.XPATH, '//*[@id="rotation-container"]/div/div[2]/div/div/div[2]/button')
                             driver.execute_script("arguments[0].scrollIntoView();", botao_excluir)
-                            sleep(4)
+                            sleep(1)
                             botao_excluir.click()  
                             salvar.click()
                             sleep(2)
@@ -195,7 +180,7 @@ while True:
                             # apagar input 3
                             botao_excluir = driver.find_element(By.XPATH, '//*[@id="rotation-container"]/div/div[3]/div/div/div[2]/button')
                             driver.execute_script("arguments[0].scrollIntoView();", botao_excluir)
-                            sleep(4)
+                            sleep(1)
                             botao_excluir.click()
                             salvar.click()
                             sleep(2)
@@ -206,7 +191,7 @@ while True:
                             #apagar input 4
                             botao_excluir = driver.find_element(By.XPATH, '//*[@id="rotation-container"]/div/div[4]/div/div/div[2]/button')
                             driver.execute_script("arguments[0].scrollIntoView();", botao_excluir)
-                            sleep(4)
+                            sleep(1)
                             botao_excluir.click()
                             salvar.click()
                             sleep(2)
@@ -217,7 +202,7 @@ while True:
                             #apagar input 5
                             botao_excluir = driver.find_element(By.XPATH, '//*[@id="rotation-container"]/div/div[5]/div/div/div[2]/button')
                             driver.execute_script("arguments[0].scrollIntoView();", botao_excluir)
-                            sleep(4)
+                            sleep(1)
                             botao_excluir.click()
                             salvar.click()
                             sleep(2)
@@ -228,7 +213,7 @@ while True:
                             #apagar input 6
                             botao_excluir = driver.find_element(By.XPATH, '//*[@id="rotation-container"]/div/div[6]/div/div/div[2]/button')
                             driver.execute_script("arguments[0].scrollIntoView();", botao_excluir)
-                            sleep(4)
+                            sleep(1)
                             botao_excluir.click()
                             salvar.click()
                             sleep(2)
@@ -239,7 +224,7 @@ while True:
                             #apagar input 7
                             botao_excluir = driver.find_element(By.XPATH, '//*[@id="rotation-container"]/div/div[7]/div/div/div[2]/button')
                             driver.execute_script("arguments[0].scrollIntoView();", botao_excluir)
-                            sleep(4)
+                            sleep(1)
                             botao_excluir.click()
                             salvar.click()
                             sleep(2)
@@ -250,7 +235,7 @@ while True:
                             #apagar input 8
                             botao_excluir = driver.find_element(By.XPATH, '//*[@id="rotation-container"]/div/div[8]/div/div/div[2]/button')
                             driver.execute_script("arguments[0].scrollIntoView();", botao_excluir)
-                            sleep(4)
+                            sleep(1)
                             botao_excluir.click()
                             salvar.click()
                             sleep(2)
@@ -261,7 +246,7 @@ while True:
                             #apagar input 9
                             botao_excluir = driver.find_element(By.XPATH, '//*[@id="rotation-container"]/div/div[9]/div/div/div[2]/button')
                             driver.execute_script("arguments[0].scrollIntoView();", botao_excluir)
-                            sleep(4)
+                            sleep(1)
                             botao_excluir.click()
                             salvar.click()
                             sleep(2)
@@ -270,3 +255,10 @@ while True:
 
                 driver.get('https://botcompany.pro/urlredirect/public/links')
     print("\033[31mFluxo encerrado!\033[m")
+
+# A cada 5min faça:
+schedule.every(5).seconds.do(main)
+
+while 1:
+    schedule.run_pending()
+    sleep(1)
