@@ -35,7 +35,7 @@ def enviar_email(nome_bot, numero_bot):
 def main():
 
     usuario = 'o.natan1907@gmail.com'
-    senha = 'Natan@11'
+    senha = 'Blade653'
 
     servico = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=servico)
