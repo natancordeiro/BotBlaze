@@ -38,10 +38,13 @@ def main():
     senha = 'Blade653'
 
     servico = Service(ChromeDriverManager().install())
-    options = webdriver.ChromeOptions()
 
+    options = webdriver.ChromeOptions()
+    # Rodar em Bakground
+    options.add_argument('--headless')
     # Para não aparecer rascunhos no LOG
     options.add_experimental_option('excludeSwitches', ['enable-logging'])
+
     driver = webdriver.Chrome(service=servico, chrome_options=options)
 
     print("Iniciando automação...")
@@ -53,10 +56,8 @@ def main():
     print("Fazendo Login no BotConversa.")
     driver.find_element(By.NAME, 'email').send_keys(usuario)
     sleep(0.7)
-
     driver.find_element(By.NAME, 'password').send_keys(senha)
     sleep(0.7)
-
     driver.find_element(By.XPATH, '//form/div[3]/button[1]').click()
     sleep(3)
     print("\033[32mLogin efetuado com sucesso!\033[m")
