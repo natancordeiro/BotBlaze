@@ -38,7 +38,11 @@ def main():
     senha = 'Blade653'
 
     servico = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(service=servico)
+    options = webdriver.ChromeOptions()
+
+    # Para não aparecer rascunhos no LOG
+    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    driver = webdriver.Chrome(service=servico, chrome_options=options)
 
     print("Iniciando automação...")
     driver.maximize_window()
